@@ -10,10 +10,12 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import com.oxyethylene.emojiclipboard.domain.objects.AppSettings
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -57,8 +59,19 @@ fun EmojiClipboardTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                //当背景透明时去掉灰色蒙层
+                window.isNavigationBarContrastEnforced = false
+                window.isStatusBarContrastEnforced = false
+            }
+            //导航栏背景颜色透明
+            window.navigationBarColor = Color.Transparent.toArgb()
+            window.statusBarColor = Color.Transparent.toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+            // 状态栏文字设置为黑色
+            WindowCompat.getInsetsController(window,window.decorView).isAppearanceLightStatusBars = true
+            // 设置沉浸式状态栏
+            WindowCompat.setDecorFitsSystemWindows(window, false)
         }
     }
 

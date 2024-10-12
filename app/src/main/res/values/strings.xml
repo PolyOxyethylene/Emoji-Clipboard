@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Emoji Clipboard</string>
+    <string name="title_activity_emoji_clipboard">EmojiClipboardActivity</string>
+
+    <!--  基础信息  -->
+    <string name="profile_tint">开发者</string>
+    <string name="profile_developer">PolyOxyethylene</string>
+    <string name="profile_github">https://github.com/PolyOxyethylene</string>
+
 </resources>

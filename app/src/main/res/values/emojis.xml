@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <string-array name="aaa" translatable="true">
+        <item name="">ddd</item>
+    </string-array>
+    
+</resources>

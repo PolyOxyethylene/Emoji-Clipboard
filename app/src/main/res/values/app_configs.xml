@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="more_indicator">→</string>
+
+    <string name="home_page_title">\uD83E\uDD14 Emoji 剪贴板</string>
+
+    <string name="emoji_page_title">全部 emoji</string>
+    <string name="emoji_page_hint">点击下列分组可查看更多子分组\n点击子分组进入分组的 emoji 详情页</string>
+
+    <string name="profile_page_title">关于应用</string>
+    <string name="profile_version_description">点击检查应用更新</string>
+    <string name="profile_about_application">应用信息</string>
+    <string name="profile_open_source">开放源代码许可</string>
+
+</resources>
