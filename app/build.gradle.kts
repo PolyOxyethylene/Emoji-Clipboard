@@ -89,6 +89,7 @@ dependencies {
     // DialogX
     val dialogx_version = "0.0.50.beta20"
     implementation("com.github.kongzue.DialogX:DialogX:$dialogx_version")
+    implementation("com.github.kongzue.DialogX:DialogXIOSStyle:${dialogx_version}")
 
     // Hilt
     implementation("com.google.dagger:hilt-android:2.52")

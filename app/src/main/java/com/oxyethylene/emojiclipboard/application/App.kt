@@ -5,7 +5,6 @@ import com.drake.brv.utils.BRV
 import com.google.android.material.color.DynamicColors
 import com.kongzue.dialogx.DialogX
 import com.oxyethylene.emojiclipboard.BR
-import com.oxyethylene.emojiclipboard.domain.objects.AppSettings
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
@@ -39,9 +38,11 @@ class App: Application() {
         // 初始化 DialogX
         DialogX.init(this)
 
+
         // 初始化 app 单例
         app = this
 
+        // 启用 Material You 主题
         DynamicColors.applyToActivitiesIfAvailable(this)
     }
 

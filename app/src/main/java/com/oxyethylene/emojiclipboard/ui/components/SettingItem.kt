@@ -26,6 +26,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.oxyethylene.emojiclipboard.domain.base.Setting
@@ -115,7 +116,7 @@ fun SwitchSettingItem(setting: SwitchSetting, modifier: Modifier = Modifier) {
 
         Column (
             modifier = Modifier
-                .width(180.dp)
+                .width(220.dp)
                 .wrapContentHeight()
         ) {
 
@@ -134,6 +135,7 @@ fun SwitchSettingItem(setting: SwitchSetting, modifier: Modifier = Modifier) {
                 Text(
                     text = setting.description,
                     fontSize = 10.sp,
+                    textAlign = TextAlign.Justify,
                     lineHeight = 12.sp,
                     modifier = Modifier.padding(top = 6.dp, bottom = 16.dp)
                 )
@@ -195,6 +197,7 @@ fun EmptySettingItem(setting: EmptySetting, modifier: Modifier = Modifier) {
                 Text(
                     text = setting.description,
                     fontSize = 10.sp,
+                    textAlign = TextAlign.Justify,
                     lineHeight = 12.sp,
                     modifier = Modifier.padding(top = 6.dp, bottom = 16.dp)
                 )
@@ -251,6 +254,7 @@ fun ActionSettingItem(setting: ActionSetting, modifier: Modifier = Modifier) {
                 Text(
                     text = setting.description,
                     fontSize = 10.sp,
+                    textAlign = TextAlign.Justify,
                     lineHeight = 12.sp,
                     modifier = Modifier.padding(top = 6.dp, bottom = 16.dp)
                 )

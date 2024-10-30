@@ -45,7 +45,7 @@ fun ProfilePage() {
         // 设置列表
         item {
             AppSettings.settings.forEach { settingSubList ->
-                SettingSubList(title = settingSubList.key, settingList = settingSubList.value)
+                SettingSubList(title = settingSubList.first, settingList = settingSubList.second)
             }
         }
 
@@ -112,17 +112,6 @@ fun ProfileCard() {
             }
 
         }
-
-        AppSettings.appInfos.forEach { info ->
-//            Divider(thickness = 0.6.dp, modifier = Modifier.padding(horizontal = 30.dp))
-
-            SettingItem(
-                setting = info,
-                modifier = Modifier.padding(horizontal = 20.dp)
-            )
-        }
-
-//        SettingSubList(title = "基本信息", settingList = AppSettings.appInfos)
 
     }
 

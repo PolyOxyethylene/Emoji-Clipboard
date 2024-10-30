@@ -4,7 +4,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.isSystemInDarkTheme
 import com.google.android.material.color.DynamicColors
+import com.kongzue.dialogx.DialogX
 import com.oxyethylene.emojiclipboard.application.App
 import com.oxyethylene.emojiclipboard.domain.objects.AppSettings
 import com.oxyethylene.emojiclipboard.ui.activity.emojiclipboardactivity.ClipBoardPage
@@ -21,6 +23,14 @@ class EmojiClipboardActivity : ComponentActivity() {
         
         setContent {
             EmojiClipboardTheme {
+
+                val darkTheme = isSystemInDarkTheme()
+
+                if (darkTheme) {
+                    DialogX.globalTheme = DialogX.THEME.DARK
+                } else {
+                    DialogX.globalTheme = DialogX.THEME.LIGHT
+                }
 
                 ClipBoardPage(subGroupName = title)
                 

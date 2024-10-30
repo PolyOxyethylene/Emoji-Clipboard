@@ -1,25 +1,18 @@
 package com.oxyethylene.emojiclipboard.domain.objects
 
 import android.content.Context
-import android.util.Log
-import com.drake.brv.item.ItemExpand
-import com.google.android.material.color.DynamicColors
-import com.oxyethylene.emojiclipboard.application.App
 import com.oxyethylene.emojiclipboard.domain.base.Thumbnail
 import com.oxyethylene.emojiclipboard.domain.model.EGroup
 import com.oxyethylene.emojiclipboard.domain.model.ESubGroup
 import com.oxyethylene.emojiclipboard.domain.model.EmojiThumbnail
-import com.oxyethylene.emojiclipboard.domain.model.EmojiTnList
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ActivityScoped
 import jakarta.inject.Inject
-import jakarta.inject.Singleton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.BufferedReader
 import java.io.InputStreamReader
-import java.util.HashMap
 import java.util.Hashtable
 import java.util.TreeMap
 
@@ -27,9 +20,10 @@ import java.util.TreeMap
  * 从文件中构建的一整个 emoji 集合，层级分为：分组(Group) → 子分组(Sub Group) → Emoji
  * @property applicationContext 用于获取 AssetManager 对象
  * @property emojiGroups 用于保存初始化的所有 emoji
+ * @property favorites 收藏夹
  * @property emojiNameMap 保存所有 emoji 名字，关联其所属的分组和子分组名字
  * @property groupNameMap 保存 Group 的名字
- * @property subGroupNameMap HashSet<String>()
+ * @property subGroupNameMap 保存 Sub Group 的名字
  */
 @ActivityScoped
 class EmojiMap @Inject constructor(@ApplicationContext val applicationContext: Context) {
@@ -39,6 +33,8 @@ class EmojiMap @Inject constructor(@ApplicationContext val applicationContext: C
 
     // 保存所有 emoji 名字，关联其所属的分组和子分组名字
     val emojiNameMap = Hashtable<String, Pair<String, String>>()
+
+    val favorites = ArrayList<EmojiThumbnail>()
 
     // 保存 Group 的名字
     val groupNameSet = HashSet<String>()
@@ -51,6 +47,13 @@ class EmojiMap @Inject constructor(@ApplicationContext val applicationContext: C
         // 读取 emoji 规范化文件
         // TODO 这里暂时固定为中文
         val manager = applicationContext.resources.assets
+
+        println(AppSettings.favorites.size)
+
+        // 初始化收藏夹
+        AppSettings.favorites.forEach { entry ->
+            favorites.add(EmojiThumbnail(name = entry.value, content = entry.key))
+        }
 
         CoroutineScope(Dispatchers.IO).launch {
 
@@ -125,5 +128,13 @@ class EmojiMap @Inject constructor(@ApplicationContext val applicationContext: C
      * 获取整个列表
      */
     fun getGroups() = emojiGroups.values.toList()
+
+    fun notifyFavoritesInsert(newEmoji: EmojiThumbnail) {
+        favorites.add(newEmoji)
+    }
+
+    fun notifyFavoritesDelete(index: Int) {
+        favorites.removeAt(index)
+    }
 
 }

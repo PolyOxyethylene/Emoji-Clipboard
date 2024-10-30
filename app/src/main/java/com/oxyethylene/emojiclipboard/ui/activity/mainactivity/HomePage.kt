@@ -1,5 +1,9 @@
 package com.oxyethylene.emojiclipboard.ui.activity.mainactivity
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.view.View
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,11 +32,24 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.recyclerview.widget.RecyclerView
+import com.drake.brv.utils.bindingAdapter
+import com.drake.brv.utils.grid
+import com.drake.brv.utils.mutable
+import com.drake.brv.utils.setup
+import com.kongzue.dialogx.dialogs.BottomDialog
+import com.kongzue.dialogx.dialogs.MessageDialog
 import com.kongzue.dialogx.dialogs.PopNotification
+import com.kongzue.dialogx.interfaces.OnBindView
+import com.kongzue.dialogx.style.IOSStyle
 import com.oxyethylene.emojiclipboard.R
+import com.oxyethylene.emojiclipboard.application.App
+import com.oxyethylene.emojiclipboard.domain.model.EmojiThumbnail
+import com.oxyethylene.emojiclipboard.domain.objects.AppSettings
+import com.oxyethylene.emojiclipboard.domain.objects.EmojiMap
 
 @Composable
-fun HomeFragment() {
+fun HomeFragment(emojiMap: EmojiMap) {
 
     val res = LocalContext.current.resources
 
@@ -83,7 +100,7 @@ fun HomeFragment() {
                         .padding(horizontal = 10.dp, vertical = 20.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary),
                     onClick = {
-                        PopNotification.build().setMessage("敬请期待").show()
+                        showFavorites(emojiMap)
                     }
                 ) {
                     Icon(imageVector = Icons.Default.Favorite, contentDescription = null, modifier = Modifier.size(20.dp))
@@ -155,5 +172,79 @@ fun ChatBubble(
             overflow = TextOverflow.Ellipsis
         )
     }
+
+}
+
+fun showFavorites(
+    emojiMap: EmojiMap
+) {
+
+    val manager = App.getInstance().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+
+    BottomDialog.build()
+        .setTitle("收藏夹")
+        .setMessage("点击复制 emoji，长按删除 emoji")
+        .setCancelButton("取消") { _, _ ->
+            return@setCancelButton false
+        }
+        .setCustomView(object : OnBindView<BottomDialog>(R.layout.thumbnail_list_layout) {
+            override fun onBind(dialog: BottomDialog?, v: View?) {
+
+                val rv = v!!.findViewById<RecyclerView>(R.id.thumbnail_list)
+
+                val adapter = rv.grid(4).setup {
+                    addType<EmojiThumbnail>(R.layout.item_emoji_thumbnail)
+
+                    R.id.thumbnail_card.onFastClick {
+                        val model = getModel<EmojiThumbnail>()
+
+                        val newClip = ClipData.newPlainText(" ", model.content)
+                        manager.setPrimaryClip(newClip)
+                        PopNotification.build().setMessage("\"${model.content} ${model.name}\" 已复制到剪贴板").show()
+
+                    }
+
+                    R.id.thumbnail_card.onLongClick {
+                        val model = getModel<EmojiThumbnail>()
+
+                        val index = rv.mutable.indexOf(model)
+
+                        if (index >= 0) {
+
+                            MessageDialog.build()
+                                .setTitle("移除 emoji")
+                                .setMessage("是否移除表情 \"${model.content} ${model.name}\"")
+                                .setOkButton("确认") {_, _ ->
+
+                                    // 确认移除
+                                    rv.mutable.removeAt(index)
+                                    rv.bindingAdapter.notifyItemRemoved(index)
+                                    AppSettings.favorites.remove(model.content)
+                                    AppSettings.favorites = AppSettings.favorites
+
+                                    PopNotification.build()
+                                        .setMessage("表情 \"${model.content} ${model.name}\" 已移除")
+                                        .setButton("撤销") {_, _ ->
+                                            rv.mutable.add(index, model)
+                                            rv.bindingAdapter.notifyItemInserted(index)
+                                            AppSettings.favorites[model.content] = model.name
+                                            AppSettings.favorites = AppSettings.favorites
+                                            return@setButton false
+                                        }.show()
+                                    return@setOkButton false
+                                }
+                                .setCancelButton("取消")
+                                .show()
+                        }
+
+                    }
+
+                }
+
+                adapter.models = emojiMap.favorites
+
+            }
+        })
+        .show()
 
 }

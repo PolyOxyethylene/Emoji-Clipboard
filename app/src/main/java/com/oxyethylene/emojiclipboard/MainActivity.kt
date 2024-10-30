@@ -7,6 +7,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -18,16 +19,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.google.android.material.color.DynamicColors
+import com.kongzue.dialogx.DialogX
 import com.oxyethylene.emojiclipboard.application.App
 import com.oxyethylene.emojiclipboard.common.constants.AppRoutes
-import com.oxyethylene.emojiclipboard.domain.objects.AppSettings
 import com.oxyethylene.emojiclipboard.domain.objects.EmojiMap
 import com.oxyethylene.emojiclipboard.ui.activity.mainactivity.BottomNavBar
 import com.oxyethylene.emojiclipboard.ui.activity.mainactivity.EmojiPage
-import com.oxyethylene.emojiclipboard.ui.components.EmptyPage
 import com.oxyethylene.emojiclipboard.ui.activity.mainactivity.HomeFragment
-import com.oxyethylene.emojiclipboard.ui.activity.mainactivity.MainTopBar
 import com.oxyethylene.emojiclipboard.ui.activity.mainactivity.ProfilePage
 import com.oxyethylene.emojiclipboard.ui.theme.EmojiClipboardTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,7 +41,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val res = resources
+        App.getInstance().putData("emoji_map", emojiMap)
 
         setContent {
             EmojiClipboardTheme {
@@ -53,6 +51,14 @@ class MainActivity : ComponentActivity() {
                 ) {
 
                     val navController = rememberNavController()
+
+                    val darkTheme = isSystemInDarkTheme()
+
+                    if (darkTheme) {
+                        DialogX.globalTheme = DialogX.THEME.DARK
+                    } else {
+                        DialogX.globalTheme = DialogX.THEME.LIGHT
+                    }
 
                     Scaffold(
                         modifier = Modifier.background(Color.Transparent),
@@ -69,7 +75,7 @@ class MainActivity : ComponentActivity() {
                         ) {
 
                             composable(route = AppRoutes.HOME_PAGE) {
-                                HomeFragment()
+                                HomeFragment(emojiMap = emojiMap)
                             }
 
                             composable(route = AppRoutes.EMOJI_PAGE) {
